@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-
-
 from __future__ import print_function
 
 
@@ -25,8 +20,6 @@ from nltk import sent_tokenize
 from nltk.tokenize import word_tokenize
 nltk.download()
 
-
-# In[2]:
 
 
 def max_len(list_of_sentence):
@@ -61,8 +54,6 @@ def process_doc(docs):
 
 
 
-# In[3]:
-
 
 class textDataset ():
 
@@ -92,14 +83,8 @@ class textDataset ():
 
 
 
-# In[4]:
-
-
 dataset1 = textDataset('adtext.rtf')
 dataset1 = dataset1.process_dataset()
-
-
-# In[5]:
 
 
 class WordEmbedding():
@@ -126,15 +111,8 @@ class WordEmbedding():
 
 
 
-
-# In[6]:
-
-
 wordemb = WordEmbedding(dataset1,1,5,4)
 word_model, vocab_size, embedding_size, pretrained_weights = wordemb.embed_word()
-
-
-# In[7]:
 
 
 def word2idx(word, word_model):
@@ -142,9 +120,6 @@ def word2idx(word, word_model):
 
 def idx2word(idx, word_model):
     return word_model.wv.index2word[idx]
-
-
-# In[8]:
 
 
 class trainingset():
@@ -169,16 +144,9 @@ class trainingset():
 
 
 
-
-# In[9]:
-
-
 maxlen = max_len(dataset1)
 trainset1 = trainingset(dataset1, maxlen, word_model)
 train_x, train_y = trainset1.init_training_set()
-
-
-# In[10]:
 
 
 def model_init(model_type, vocab_size, embedding_size, pretrained_weights):
@@ -203,10 +171,6 @@ def model_init(model_type, vocab_size, embedding_size, pretrained_weights):
 
 
 
-
-# In[25]:
-
-
 def generate_next(text, word_model, model, num_generated, temperature):
     word_idxs = [word2idx(text, word_model)]
     for i in range(num_generated):
@@ -227,8 +191,6 @@ def sample(preds, temperature):
         return np.argmax(probas)
 
 
-# In[12]:
-
 
 def n_models(listof_modeltype, vocab_size, embedding_size, pretrained_weights):
     listof_model = []
@@ -236,9 +198,6 @@ def n_models(listof_modeltype, vocab_size, embedding_size, pretrained_weights):
         model = model_init(listof_modeltype[i], vocab_size, embedding_size, pretrained_weights)
         listof_model.append(model)
     return listof_model
-
-
-# In[13]:
 
 
 def training(train_x, train_y, listof_model, listof_bs, epoch):
@@ -256,33 +215,23 @@ def training(train_x, train_y, listof_model, listof_bs, epoch):
     return training_graph, trained_models
 
 
-
-# In[14]:
-
-
 import matplotlib.pyplot as plt
 def plot_training (listof_history, measurement):
     for history in listof_history:
         plt.plot(history.history[measurement])
     plt.title = ('Model LOSS')
     plt.xlabel('epoch')
-    plt.ylabel('loss')
+    plt.ylabel('loss amount')
     return plt.show()
-
-
-# In[32]:
 
 
 lsmodel = n_models(['bidirectional', 'uni'], vocab_size, embedding_size, pretrained_weights )
 
 training_graph, trained_models = training(train_x, train_y, lsmodel, [64, 32], 100)
 
+
 for model, i in enumerate (trained_models):
     model.save("textmodel" + str(i) + '.h5')
-
-
-# In[26]:
-
 
 def prediction (text, listof_models, word_model, num_word_gen, temperature,n):
     sentences = []
